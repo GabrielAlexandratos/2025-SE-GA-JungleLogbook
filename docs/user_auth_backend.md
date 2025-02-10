@@ -24,6 +24,10 @@ pip install -r requirements.txt
 ## Step 2: Setup the user model in `models.py`
 
 ``` python
+import bcrypt
+from flask_login import UserMixin
+#...
+
 class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -60,15 +64,20 @@ login_manager = LoginManager()  #2
 2. We are using `Flask-Login` to manage user sessions.
 
 ## Step 4: Adding a service layer
-It is good practice to not directly access the database directly from our models, instead we should use a service layer to handle all database operations. Lets create one for the user model in a new file called `services.py`.
+It is good practice to not access the database directly from our models, instead we should use a service layer to handle all database operations. We could also implement a repository pattern as well, but it is beyond what we need here. Lets create a service for the user model in a new file called `services.py`.
 
 ```python
 from models import User
 
 class UserService:
-    def get_user(self, user_id):
-        return User.query.get(user_id)
+    def get_user(self, session, user_id):
+        return session.query(User).get(user_id)
 ```
+We pass in a database session and user id to get a user from the database. This service can be used in our controllers or other parts of our application where we need to interact with the database. 
+
+> [!Note]
+> The technique we are using is call dependency injection. We pass in the dependencies that our class needs when we create an instance of it or via the methods to make our code more testable and reusable.
+
 
 ## Step 5: Update `app.py`
 
@@ -130,14 +139,27 @@ if __name__ == '__main__':
 3. create an instance of the UserService class.
 4. Verify that a user is authenticated by checking their credentials against the database.
 
-
 ## Question
 1. Why would we only return the email address for the user in the __repr__ method?
 
+## Step 6: Update `extensions.py` to provide a database session
+```python
+#...
+bcrypt = Bcrypt()
+login_manager = LoginManager()
+
+def db_session():
+    return db.session()
+```
+
 Once you have the code in place try to run it and see if it works as expected.
 
-## Step 6: Create routes for authentication
-We want to support user authentication in our application. To do this we will create a UI for user login and implement the necessary backend logic to handle the login process. We will also need to ensure that the user's credentials are verified against the database before granting access to the application. The routes needed are:
+```
+flask run --debug
+```
+
+## Step 7: Create routes for authentication
+We want to support user authentication in our application. To do this we will create code in the backend for the user login process. We will also need to ensure that the user's credentials are verified against the database before granting access to the application. The routes needed are:
 
 - `/login` - This route will display the login form.
 - `/logout` - This route will log out the user and redirect them to the login page.
@@ -179,23 +201,22 @@ def register_post():
 2. Add a POST route to handle form submissions. When a user submits the login form, this route will be called. We can then add code to check the user's credentials and log them in if they are correct. The form used will send a `post` request to `/auth/login`.
 
 > [!Note]
-> There are several verbs that can be used with routes, such as GET, POST, PUT and DELETE. Each verb has its own purpose
+> There are several verbs that can be used with routes, such as GET, POST and PUT. Each verb has its own purpose
 > - GET: retrieves data from a specified resource.
 > - POST: sends data to be processed to a specified resource.
 > - PUT: updates or replaces an existing resource with new data.
-> - DELETE: removes a specified resource.
 
-To load blueprint in the app, we need to import it and register it with the Flask application. In `app.py`, add the following code:
+To load blueprints in the app, we need to import it and register it with the Flask application. In `app.py`, add the following code:
 
 ```python
 from flask import Flask, render_template
 import logging
 
 from config import config, Config
-from extensions import db, migrate, login_manager
+from extensions import db, migrate, login_manager, db_session
 from services import UserService
 
-from auth import auth_bp
+from auth import auth_bp                        # <--- add this line to import auth_bp
 
 logger = logging.getLogger(__name__)
 
@@ -204,18 +225,36 @@ logger = logging.getLogger(__name__)
 def create_app(configuration: str = 'development') -> Flask:
 
     app = Flask(__name__)
-    app.register_blueprint(auth_bp) 
+    app.register_blueprint(auth_bp)           # <--- add this line to register auth_bp with the Flask application
+    app.config.from_object(configuration)
 
     configuration = config[configuration]
 
 # .... other code not changed
 
-    @app.route('/home')
+    @app.route('/home')                       # <--- add this route for logged in users
     def home():
         logger.info("Rendering the home page")
         return render_template('home.html')
 
     return app
 ```
+
+3. Create a new file called `home.html` in the `templates` directory and add the following code:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to the Home Page!</h1>
+</body>
+</html>
+```
+
+
+Run the application to confirm that it is still working.
 
 [< Prev: Database](./database.md) | [Next: Authentication Frontend >](./user_auth_frontend.md)
