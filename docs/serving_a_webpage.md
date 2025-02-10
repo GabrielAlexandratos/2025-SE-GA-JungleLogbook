@@ -3,6 +3,8 @@
 ## Step 1. Create a new project.
 It is recommended that you create a new project in github, to simplify setting up version control. To do this go to github and click on the "+" icon in the upper right corner. Select "New repository" and follow the prompts to create a new repository.
 
+[![Creating a repository](./create_a_repo.png)](https://www.youtube.com/watch?v=th8KpEoxQVk "Create a Repository")
+
 If you don't want to use a git repository, you can create a new folder on your local machine and navigate to it in a terminal window.
 
 In a terminal window, navigate to the location where you want to create your project and run the following command:
