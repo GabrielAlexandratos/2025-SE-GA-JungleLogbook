@@ -19,7 +19,10 @@ There are several ways to refactor for extensibility and scalability, including:
 4. **Implementing a layered architecture**: A layered architecture separates our application into different layers, each with its own responsibility. This makes it easier to understand and maintain our code, as well as to add new features without breaking existing functionality.
 
 ## Conclusion 
-Refactoring is an important part of the development process, especially for large applications. By using design patterns, implementing a microservices architecture, using an application factory pattern, and implementing a layered architecture, we can refactor our code for extensibility and scalability. This will make it easier to add new features, improve maintainability, and improve the performance of our application in the future.
+Refactoring is an important part of the development process, especially for large applications. By using design patterns, implementing a microservices architecture, using an application factory pattern, and implementing a layered architecture, we can refactor our code for extensibility and scalability. This will make it easier to add new features, improve maintainability, and improve the performance of our application in the future. 
+
+> [!Note]
+> You don't need to apply all of these techniques to refactor code. There are many other techniques and patterns that can be used to refactor code, depending on the specific needs of your application. The key is to identify areas where refactoring will improve maintainability and scalability, and then apply the appropriate techniques.
 
 ## Step 1: Make it a Factory Application
 
@@ -42,11 +45,11 @@ if __name__ == '__main__':
 
 ```
 
-See [Flask Configuration](https://flask.palletsprojects.com/en/stable/config/) for more details.
-
 Run the application and make sure it is working. This is a simple factory application that creates an instance of the Flask app and returns it. This allows us to easily create multiple instances of the app in different environments, such as development and testing.
 
 We have also ensured we haven't added any new functionality so to prove that the change was successful
+
+See [Application Factories](https://flask.palletsprojects.com/en/stable/patterns/appfactories/) for more details.
 
 ## Step 2: Implement a configuration file
 
@@ -55,9 +58,8 @@ Creating a configuration file allows us to separate our configuration settings f
 ``` python
 # config.py
 class Config:
-    LOG_LEVEL = logging.INFO
-    LOG_FILENAME = 'app.log'
-    LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    pass
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -82,6 +84,8 @@ We are using inheritance to create different configuration classes for different
 > [!Note]
 > Using python is one of many types of file formats that can be used to store configuration data. You could also use json, ini or yaml file formats as well.
 
+See [Flask Configuration](https://flask.palletsprojects.com/en/stable/config/) for more details.
+
 ## Step 3: Update the application to use the configuration file
 
 We need to update our application to use the configuration file. We can do this by passing the configuration object to the `create_app()` function when we create an instance of the app. I have also added in some type information to make our code easier to read.
@@ -89,7 +93,7 @@ We need to update our application to use the configuration file. We can do this 
 ``` python
 from flask import Flask, render_template
 
-from config import config, Config   #1
+from config import config   #1
 
 def create_app(configuration: str = 'default') -> Flask:   #2
 
@@ -108,7 +112,7 @@ if __name__ == '__main__':
     create_app('development').run()
 ```
 
-1. Importing the configuration module and its Config class.
+1. Importing the configuration module.
 2. Defining a function to configure the application based on the provided configuration object using the `default` configuration if one is not provided.
 
 > [!TIP]
