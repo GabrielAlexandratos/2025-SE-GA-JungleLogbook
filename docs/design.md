@@ -142,4 +142,4 @@ sequenceDiagram
     System->>User: Display list of expenses with filters and sorting options
 ```
 
-[< Prev: README](./requirements_and_analysis.md) | [Next: Implementation >](./implementation.md)
+[< Prev: Requirements](./requirements_and_analysis.md) | [Next: Implementation >](./implementation.md)
