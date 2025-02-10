@@ -74,12 +74,12 @@ Create a README.md file to provide an overview of your project and instructions 
 For Windows:
 ```
 python -m venv .venv
-venv\Scripts\activate
+.venv\Scripts\activate
 ```
 For macOS/Linux:
 ```
 python3 -m venv .venv
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 ## Step 8. Install dependencies.
@@ -124,6 +124,8 @@ Create an `index.html` file in the `src/expense_tracker/templates/` directory wi
 ```
 
 ## Step 11. Run the Flask application.
+Ensure you are in the `src/expense_tracker` directory before running the application.
+
 Run the Flask application by executing the following command in your terminal:
 ```
 python app.py
