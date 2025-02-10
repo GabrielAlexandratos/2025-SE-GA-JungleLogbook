@@ -2,6 +2,7 @@ from flask import Flask, render_template
 import logging
 
 from config import config, Config
+from extensions import db, migrate
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,9 @@ def create_app(configuration: str = "default") -> Flask:
     configuration = config[configuration]
     configure_logging(configuration)
     app.config.from_object(configuration)
+
+    db.init_app(app)
+    migrate.init_app(app, db)
 
     @app.route('/')
     def index():

@@ -5,7 +5,7 @@
 In this section, we will learn how to add a database to our Flask application. We will use SQLite as our database since it is lightweight and easy to use.
 
 ## Step 1: Adding to the configuration file
-1. It is good practice to keep you application configurations in a separate file. In a production deployment you would then override key values like passwords and access keys using environment variables. In `config.py` and add the following configuration to the DevelopmentConfig class:
+1. In `config.py` and add the following configuration to the DevelopmentConfig class. In a production deployment you would override key values like passwords and access keys using environment variables long with defining a ProductionConfig class. 
 
 ```python
 
@@ -42,7 +42,7 @@ Flask-Migrate==4.1.0
 
 ## Step 3: Add in the code to create and migrate databases
 
-1. Create a new file called `extensions.py` in your project directory. This file will contain all your database models. We will use this file later to extend our with additional functionality.
+1. Create a new file called `extensions.py` in your project directory. This file will contain shared information for running your application. We will use this file later to add additional functionality.
 
 ```python
 from flask_sqlalchemy import SQLAlchemy
@@ -75,7 +75,7 @@ def configure_logging(configuration: Config):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-def create_app(configuration: str = 'development') -> Flask:  #2
+def create_app(configuration: str = 'development') -> Flask:
 
     app = Flask(__name__)
 
@@ -83,8 +83,8 @@ def create_app(configuration: str = 'development') -> Flask:  #2
     configure_logging(configuration)
     app.config.from_object(configuration)
 
-    db.init_app(app)  #3
-    migrate.init_app(app, db)  #4
+    db.init_app(app)  #2
+    migrate.init_app(app, db)  #3
 
     @app.route('/')
     def index():
@@ -97,9 +97,8 @@ if __name__ == '__main__':
     create_app('development').run()
 ```
 1. Import the extension module where we create the database and migrations.
-2. Provide a default configuration to allow us to run migrations without specifying a configuration.
-3. Initialize SQLAlchemy with Flask app.
-4. Initialize Flask-Migrate with Flask app and SQLAlchemy.
+2. Initialize SQLAlchemy with Flask app.
+3. Initialize Flask-Migrate with Flask app and SQLAlchemy.
 
 ## Step 4. Create the Database Tables
 
@@ -140,7 +139,7 @@ To create the database tables based on the defined models, you can use Flask-Mig
 flask db init
 ```
 
-Once this has run successfully you need to modify the `env.py` to be able to find your models.
+Once this has run successfully you need to modify the `env.py` to be able to find your models. It will be located in `src/expense_tracker/migrations/env.py`.
 
 Replace the comments that look like:
 ``` python
@@ -153,7 +152,7 @@ Replace the comments that look like:
 with
 
 ```python
-from expense_tracker.models import Base  # noqa: E402
+from models import Base  # noqa: E402
 target_metadata = Base.metadata
 ```
 
@@ -165,7 +164,7 @@ flask db upgrade
 ```
 This will initialize a migrations directory, create an initial migration script, and apply the migration to create the tables in your database. 
 
-Once you have run these commands, select the database which will be in '/instance/expenses.db' and see that the 'expenses' table has been created with the appropriate columns. 
+Once you have run these commands, select the database which will be in 'src/expense_tracker/instance/expenses.db' and see that the 'expenses' table has been created with the appropriate columns. 
 
 > [!Note]
 > There is more going on here with using Flask-SQLAlchemy, but it is not a requirement to understand the details. You can read more about it at[Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/) and [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/).
