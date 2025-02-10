@@ -39,8 +39,8 @@ flowchart TD
     ViewExpenses -->|"select for"| DeleteExpense
 
     %% Styling
-    classDef actor fill:#333,stroke:#333,stroke-width:2px
-    classDef useCase fill:#444,stroke:#333,stroke-width:1px
+    classDef actor fill:#333,stroke:#FFF,stroke-width:2px
+    classDef useCase fill:#444,stroke:#FFF,stroke-width:1px
     class User,Admin actor
     class Login,Register,AddExpense,ViewExpenses,EditExpense,DeleteExpense useCase
 
