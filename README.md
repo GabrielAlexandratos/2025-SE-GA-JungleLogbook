@@ -2,6 +2,8 @@
 
 This is a short unit to familiarise stage 6 students in NSW to the full software development lifecycle. This demonstration can be presented in class as a guided exercise that is teacher lead. There is an associated activity that can be found [here](https://github.com/yourusername/activity) that students can build themselves to practice their skills and get familiar with the tools and technologies that can be used in software development.
 
+[![How it works](./expense_tracker.png)](https://www.youtube.com/watch?v=t7ciL6g0urA "Demonstration of an expense tracker")
+
 ## Table of Contents
 1. [Requirements and Analysis](./docs/requirements_and_analysis.md)
 2. [Design](./docs/design.md)

@@ -24,7 +24,8 @@ Use either github desktop or the command line to clone the repository.
 git clone https://github.com/KillarneyHeightsHS/expense-tracker.git
 ```
 
-![Clone using GitHub Desktop](cloning_a_repo.gif)
+[![Clone using GitHub Desktop](./cloning_a_repo.png)](https://www.youtube.com/watch?v=SUuYRbGf1UA Clone using GitHub Desktop)
+
 
 > [!TIP]
 > It can help you organise your repositories if you have a dedicate location for them. Eg `C:\Users\<username>\repos` or `~/repos`.
