@@ -47,6 +47,13 @@ class User(UserMixin, db.Model):
 ```
 1. It is important that we hash the password before storing it in the database so as not to expose sensitive information. This is not the most secure way of hashing passwords, we should also salt the password as well, but it is sufficient for this example.
 
+2. Go ahead and update the database with the user model.
+
+```
+flask db migrate -m "adding in user model"
+flask db upgrade
+```
+
 ## Step 3: Add extensions for user authentication and password hashing
 
 ```python
