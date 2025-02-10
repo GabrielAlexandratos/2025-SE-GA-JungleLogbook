@@ -36,13 +36,13 @@ It is helpful to create a virtual environment for your project. This will help y
 Windows:
 ```
 python -m venv .venv
-venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
 Linux / MacOS:
 ```
 python3 -m venv .venv
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 ### Step 3. Install Dependencies
