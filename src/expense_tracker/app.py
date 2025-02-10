@@ -5,9 +5,11 @@ from flask_login import login_required
 
 from config import config, Config
 from extensions import db, migrate, login_manager, db_session, csrf
-from services import UserService
+from services import UserService, ExpenseService
 
 from auth import auth_bp
+from expense_routes import expense_bp
+
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +28,7 @@ def configure_logging(configuration: Config):
 def create_app(configuration: str = "default") -> Flask:
     app = Flask(__name__)
     app.register_blueprint(auth_bp) 
+    app.register_blueprint(expense_bp)
 
     configuration = config[configuration]
     configure_logging(configuration)
@@ -41,15 +44,21 @@ def create_app(configuration: str = "default") -> Flask:
         logger.info("Rendering the index page")
         return render_template('index.html')
 
-    @app.route('/home')
+    @app.route("/home")
     @login_required
     def home():
         logger.info("Rendering the home page")
-        return render_template('home.html')
+        expenses = expense_service.get_expenses(db_session())
+        total = expense_service.calculate_total(db_session())
+        logger.info(f"Calculated total expenses: {total}")
+        logger.info(f"Retrieved {len(expenses)} expenses for the current user")
+        logger.info("Rendering the home page with expenses")
+        return render_template("home.html", expenses=expenses, total_amount=total)
 
     return app
 
 user_service = UserService()
+expense_service = ExpenseService()
 
 # used to reload the user object from the user ID stored in the session
 @login_manager.user_loader
