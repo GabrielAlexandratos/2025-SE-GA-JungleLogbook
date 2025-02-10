@@ -1,8 +1,10 @@
 from flask import Flask, render_template
 import logging
 
+from flask_login import login_required
+
 from config import config, Config
-from extensions import db, migrate, login_manager, db_session
+from extensions import db, migrate, login_manager, db_session, csrf
 from services import UserService
 
 from auth import auth_bp
@@ -29,8 +31,10 @@ def create_app(configuration: str = "default") -> Flask:
     configure_logging(configuration)
     app.config.from_object(configuration)
 
+    login_manager.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
+    csrf.init_app(app)
 
     @app.route('/')
     def index():
@@ -38,6 +42,7 @@ def create_app(configuration: str = "default") -> Flask:
         return render_template('index.html')
 
     @app.route('/home')
+    @login_required
     def home():
         logger.info("Rendering the home page")
         return render_template('home.html')

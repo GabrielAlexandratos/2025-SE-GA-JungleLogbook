@@ -1,6 +1,6 @@
-# User Authorisation Frontend
+# User Authentication Frontend
 
-Now that we have a backend for user authorisation, it's time to create the frontend that will interact with this backend. This frontend will be responsible for displaying the login and registration forms, as well as handling the authentication process.
+Now that we have a backend for user authentication, it's time to create the frontend that will interact with this backend. This frontend will be responsible for displaying the login and registration forms, as well as handling the authentication process.
 
 ## Step 1: Create the base template
 
@@ -29,7 +29,7 @@ The base template `templates/base.html` is used to provide a consistent layout f
 
 ## Step 2: Home Page for Logged In Users
 
-We want a home page `templates/home.html` after login that has a navigation bar. See [NavBar](https://getbootstrap.com/docs/5.2/components/navbar/) for examples of different navigation bars.
+We want a home page `templates/home.html` after login that has a navigation bar. See [NavBar](https://getbootstrap.com/docs/5.2/components/navbar/) for examples of different navigation bars. Replace the `home.html` file with the following:
 
 ```html
 {% extends 'base.html' %}
@@ -56,7 +56,7 @@ We want a home page `templates/home.html` after login that has a navigation bar.
             <a class="nav-link" href="#">Settings</a>
           </li>
         </ul>
-        <a class="btn btn-primary" href="/" role="button">Logout</a>
+        <a class="btn btn-primary" href="/auth/logout" role="button">Logout</a>
       </div>
     </div>
   </nav>
@@ -64,7 +64,6 @@ We want a home page `templates/home.html` after login that has a navigation bar.
 {% endblock %}
 ```
 Note the use of `{extend "base.html" %}` to extend the base template. This allows us to reuse the layout of the base template while only having to specify the content that is unique to this page. Using `{% block content %}` and `{% endblock %}` indicates that the content within this block will replace the `{% block content %}` in the base template.
-
 
 We also want to prevent from access the home page so we need to make to following changes in `app.py`
 
@@ -78,6 +77,8 @@ from config import config, Config
 from extensions import db, migrate, login_manager, csrf     #                               <-- add in csrf
 from services import UserService
 # ...
+    login_manager.init_app(app)                             #                               <-- add this line
+    db.init_app(app)
     migrate.init_app(app, db)  # Initialize Flask-Migrate with Flask app and SQLAlchemy
     csrf.init_app(app)  # Initialize Flask-WTF CSRF protection with Flask app               <-- add this line
 # ...
@@ -116,7 +117,7 @@ If you run your application now and try to access the home page, you see an acce
 
 ## Step 3: Landing Page
 
-Create a landing page `templates\index.html` that displays a welcome message and links to the login page.
+Replace a landing page `templates\index.html` with the following.
 
 ``` html
 {% extends 'base.html' %}
@@ -208,14 +209,16 @@ Create a logout page `templates\logout.html` that logs out the user and redirect
 </head>
 <body>
     <h1>You have been logged out.</h1>
-    <p><a href="/">Go back to the homepage</a></p>
+    <p><a href="/">Go back to the landing page</a></p>
 </body>
 </html>
 ```
 
+Run your code now and see what it looks like! You should have login and logout links on the landing page.
+
 ## Step 7: Implementing Login and Logout Logic
 
-Our backend needs to manager the user sessions and validate the credentials entered by the user during the login process. Lets replace the contents of `auth.py` with the following code:
+Our backend needs to manage the user sessions and validate the credentials entered by the user during the login process. Lets replace the contents of `auth.py` with the following code:
 
 ```python
 from flask import Blueprint, redirect, render_template, url_for, request
@@ -223,7 +226,7 @@ from flask_wtf import FlaskForm
 from flask_login import login_user, logout_user
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
-from extensions import bcrypt
+from extensions import bcrypt, db_session
 from services import UserService
 
 userService = UserService()
@@ -245,7 +248,7 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("Register")
 
     def validate_username(self, username):
-        existing_user_username = userService.get_user_by_email(username.data)
+        existing_user_username = userService.get_user_by_email(db_session(), username.data)
         if existing_user_username:
             print(existing_user_username)
             raise ValidationError(
@@ -278,7 +281,7 @@ def login_post():
     if form.validate():
         username = form.username.data
         password = form.password.data
-        user = userService.get_user_by_email(username)
+        user = userService.get_user_by_email(db_session(), username)
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
             return redirect("/home")
@@ -306,7 +309,7 @@ def register():
         if form.validate():
             username = form.username.data
             password = form.password.data
-            userService.create_user(username, password)
+            userService.create_user(db_session(), username, password)
             return redirect(url_for("auth.login"))
         else:
             print(f"{request.method} invalid form submission! {form.errors}")
@@ -314,6 +317,38 @@ def register():
     return render_template("register.html")
 
 ```
+
+## Step 8: Update `UserService`
+
+```python
+from models import User
+from sqlalchemy.orm import Session
+
+class UserService:
+    def get_user(self, session: Session, user_id):
+        return session.query(User).get(user_id)
+    
+    def get_user_by_email(self, session: Session, email: str):
+        return session.query(User).filter_by(email=email).first()
+    
+    def create_user(self, session: Session, email, password):
+        new_user = User(email=email, password=password)
+        session.add(new_user)
+        session.commit()
+        return new_user
+```
+
+Go ahead and register a new user and login.
+1. Go to the landing page `http://127.0.0.1:5000/`
+2. Click on "Register" and fill out the form with a new email and password. (Don't use anything you would actually use for an email or password!)
+3. Click "Register".
+4. You should be redirected to the home page `http://127.0.0.1:5000/login`.
+5. Fill out the form with the email and password you just registered.
+6. Click "Login".
+7. You should now be on the home page with the navbar at the top.
+8. Click on "Logout" in the navbar.
+9. Try to go back to the home page `http://127.0.0.1:5000/home` and you should get a message about not being authorised.
+
 
 There is a lot going on here but the main point is that we are trying to create a user registration and login system. 
 
