@@ -1,16 +1,32 @@
 from flask import Flask, render_template
+import logging
 
-from config import config   #1
+from config import config, Config
 
-def create_app(configuration: str = 'default') -> Flask:   #2
+logger = logging.getLogger(__name__)
 
+def configure_logging(configuration: Config):
+    """Configure the logger to write to a file"""
+
+    logger.setLevel(configuration.LOG_LEVEL)
+
+    handler = logging.FileHandler(configuration.LOG_FILENAME, mode="w")
+    formatter = logging.Formatter(configuration.LOG_FORMAT)
+
+    # add formatter to the handler and logger
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+def create_app(configuration: str = "default") -> Flask:
     app = Flask(__name__)
 
     configuration = config[configuration]
+    configure_logging(configuration)
     app.config.from_object(configuration)
 
     @app.route('/')
     def index():
+        logger.info("Rendering the index page")
         return render_template('index.html')
 
     return app

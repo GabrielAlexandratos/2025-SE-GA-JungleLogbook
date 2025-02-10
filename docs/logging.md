@@ -39,36 +39,62 @@ def create_app(configuration: str = "default") -> Flask:
     app = Flask(__name__)
 
     configuration = config[configuration]
-    configure_logging(configuration)
+    configure_logging(configuration)         #3
     app.config.from_object(configuration)
 
     @app.route('/')
     def index():
-        logger.info("Rendering the index page")
+        logger.info("Rendering the index page") #4
         return render_template('index.html')
 
     return app
 
 if __name__ == '__main__':
-    create_app('config.DevelopmentConfig').run()
+    create_app('development').run()
 ```
 
 1. import the logging module
 2. create a logger object using logging.getLogger(__name__)
 3. configure the logger by setting the filename and level
+4. log a message when rendering the index page
 
 ## Step 3: Configure the Logger
 After implementing the logger, we need to configure it so that it writes logs to the correct file. This can be done by setting environment variables or by modifying configuration files in our application. We should also consider how we will handle log rotation and compression to ensure that our logs are not too large or difficult to manage.
 
 We can move the configuration of the logger into `config.py` to improve functionality and use different settings when testing, developing or in production.
 
+```python
+import logging
+
+class Config:
+    LOG_LEVEL = logging.WARN                 # WARN, ERROR and CRITICAL are logged.
+
+    LOG_FILENAME = 'app.log'
+    LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 
-## Step 4: Test the Logger
-Once we have implemented and configured the logger, we need to test it thoroughly to ensure that it works as expected. This can be done by writing unit tests for the logger and integration tests for the entire application. We should also consider how we will handle log errors and exceptions to ensure that our logs are not corrupted or incomplete.
+class DevelopmentConfig(Config):
+    LOG_LEVEL = logging.INFO                 # Override to include INFO level logging.
+    DEBUG = True
+    ENVIRONMENT = "development"
 
-## Step 5: Document the Logger
-Finally, we need to document the logger so that other developers can understand how it works and how to use it in their applications. This can be done by writing a README file for the logger and creating documentation for the entire application. We should also consider how we will handle log changes and updates to ensure that our logs are always up-to-date with the latest changes in the application.
+
+class TestingConfig(Config):
+    LOG_LEVEL = logging.INFO
+    DEBUG = True
+    TESTING = True
+    ENVIRONMENT = "testing"
+
+
+config = {
+    "development": DevelopmentConfig,
+    "testing": TestingConfig,
+    "default": DevelopmentConfig,
+}
+```
+
+When you run the application, you should see a log file named `app.log` with the appropriate logging level and format.
+
 
 More details on logging in python can be found at [https://docs.python.org/3/library/logging.html](https://docs.python.org/3/library/logging.html).
 
