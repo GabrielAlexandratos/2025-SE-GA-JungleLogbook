@@ -38,12 +38,6 @@ flowchart TD
     ViewExpenses -->|"select for"| EditExpense
     ViewExpenses -->|"select for"| DeleteExpense
 
-    %% Styling
-    classDef actor fill:#333,stroke:#FFF,stroke-width:2px
-    classDef useCase fill:#444,stroke:#FFF,stroke-width:1px
-    class User,Admin actor
-    class Login,Register,AddExpense,ViewExpenses,EditExpense,DeleteExpense useCase
-
     %% Notes
     subgraph Preconditions
         note1["All actions except Register
