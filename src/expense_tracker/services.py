@@ -1,5 +1,5 @@
 from sqlalchemy import func
-from models import User, Expense
+from expense_tracker.models import User, Expense
 from sqlalchemy.orm import Session
 
 class UserService:

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
-from forms import ExpenseForm
-from services import ExpenseService
-from extensions import db_session
+from expense_tracker.forms import ExpenseForm
+from expense_tracker.services import ExpenseService
+from expense_tracker.extensions import db_session
 
 expense_bp = Blueprint("expenses", __name__, url_prefix="/expenses", template_folder="templates")
 expense_service = ExpenseService() 

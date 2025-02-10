@@ -1,5 +1,5 @@
 from flask_login import UserMixin
-from extensions import db, bcrypt
+from expense_tracker.extensions import db, bcrypt
 from sqlalchemy.orm import DeclarativeBase
 from datetime import datetime, timezone
 
@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 class Base(DeclarativeBase):
   pass
 
-class Expense(db.Model):
+class Expense(Base):
     __tablename__ = 'expense'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -22,7 +22,8 @@ class Expense(db.Model):
         return f"Expense('{self.title}', '{self.category}', {self.amount}, {self.date})"
     
 
-class User(UserMixin, db.Model):
+class User(UserMixin, Base):
+    __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)

@@ -3,8 +3,8 @@ from flask_wtf import FlaskForm
 from flask_login import login_user, logout_user
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
-from extensions import bcrypt, db_session
-from services import UserService
+from expense_tracker.extensions import bcrypt, db_session
+from expense_tracker.services import UserService
 
 userService = UserService()
 

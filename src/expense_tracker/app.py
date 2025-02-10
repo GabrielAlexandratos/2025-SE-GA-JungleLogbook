@@ -3,12 +3,12 @@ import logging
 
 from flask_login import login_required
 
-from config import config, Config
-from extensions import db, migrate, login_manager, db_session, csrf
-from services import UserService, ExpenseService
+from expense_tracker.config import config, Config
+from expense_tracker.extensions import db, migrate, login_manager, db_session, csrf
+from expense_tracker.services import UserService, ExpenseService
 
-from auth import auth_bp
-from expense_routes import expense_bp
+from expense_tracker.auth import auth_bp
+from expense_tracker.expense_routes import expense_bp
 
 
 logger = logging.getLogger(__name__)

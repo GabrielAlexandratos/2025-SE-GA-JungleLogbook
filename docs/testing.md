@@ -1,10 +1,10 @@
 # Testing
 
-We have been doing informal testing so far but now we want to make sure that everything is working as expected and that we can catch any issues early on. We will add in some unit tests and integration tests to make sure that everything is working as expected.
+We have been doing informal testing so far but now we want to make sure that everything is working as expected and that we can catch any issues early on. We will add in some integration tests to make sure that everything is working as expected.
 
-As a software engineer, we would write unit tests to ensure that individual components or functions work as expected. We will also write integration tests to make sure that different components or modules work together correctly. Depending on the company policy you may also write the system and acceptance tests, especially if they do not have a testing team which is common in smaller companies and those following agile methodologies.
+As a software engineer, we would write unit tests to ensure that individual components or functions work as expected. We would also write integration tests to make sure that different components or modules work together correctly. Depending on the company policy the software engineer may also write the system and acceptance tests, especially if they do not have a testing team which is common in smaller companies and those following agile methodologies.
 
-As a test engineer, we would review the requirements and design a set of test scenarios and test cases. We will also create a test plan that outlines the scope of testing, the resources required, and the schedule for testing. Once we have our test plan in place, we can begin to execute our tests and document any issues or bugs that we find. These tests would be consider system and user acceptance testing.
+As a test engineer, we would review the requirements and design a set of test scenarios and test cases. We would also create a test plan that outlines the scope of testing, the resources required, and the schedule for testing. Once we had our test plan in place, we would begin to execute our tests and document any issues or bugs that we find. These tests would be consider system and user acceptance testing.
 
 ## Test Scenarios
 
@@ -48,7 +48,7 @@ An example of how this would be describe is:
 
 # Step 1: Setting up the testing environment
 
-We will use pytest to write and run our tests due to its simplicity and powerful features such as fixtures, parameterization, and plugins. Unittest is another option that is built into Python but is more verbose to implement.
+We will use pytest to write and run our tests due to its simplicity and powerful features such as fixtures, parameterisation, and plugins. Unittest is another option that is built into Python but is more verbose to implement.
 
 Add the pytest library to your `requirements.txt` and run `pip install -r requirements.txt` to install.
 
@@ -56,9 +56,9 @@ Add the pytest library to your `requirements.txt` and run `pip install -r requir
 pytest==8.3.4
 ```
 
-# Step 2: Writing the Test Cases
+# Step 2: Writing Unit Test Cases
 
-As the code is currently written there is no place to use unit tests. We would need to refactor the code to make it more testable. As an example of a unit test consider the following:
+As the code is currently written there is no place to use unit tests. We would need to refactor the code to make it more testable. As an example of a unit test consider the following example. To try it out create a file named `test_sample.py` in the tests directory.
 
 ```python
 # content of test_sample.py
@@ -70,11 +70,18 @@ def test_answer():
     assert func(3) == 5
 ```
 
+To run the test, simply execute `pytest` in your terminal from the root of your project. You can also run the test through VSCode's IDE.
+
+> [!Note]
+> You will need to fix the test if it does not pass.
+
 You can read more about pytest at [https://docs.pytest.org/en/stable/](https://docs.pytest.org/en/stable/).
 
 We can however write integration tests for the interactions with the database and also routes (urls) for our application.
 
-Create a new folder called `tests` and add `test_expenses.py` in your project directory and add the following code:
+# Step 3: Writing Integration Test Cases
+
+1. In the `tests` folder add `test_expenses.py` and add the following code:
 
 ```python
 from datetime import datetime
@@ -115,15 +122,57 @@ Note that we name our file starting with `test_` and also the methods that will 
 
 The other habit to develop is using descriptive names for our tests. This will help us understand what each test is doing and also make it easier to identify which test is failing if a test fails. For example, `test_add_remove_expense` clearly indicates that this test is checking if the expense service can add an expense correctly and then removed. You could also append `_success` or `_failure` to indicate if the test is a success or failure scenario. For example, `test_add_remove_expense_success`.
 
+2. Create a `pyproject.toml` file in the root of your project and add the following content:
+
+```
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
+```
+
+This configuration tells pytest where to look for the source code of our application. In this case, we are telling pytest to look in the `src` directory.
+
+3. We will also need to go back through our src code and make local imports absolute paths instead of relative paths so our tests can find the methods and classes to call. For example, if we have the following import statement:
+```python
+from extensions import db, bcrypt
+```
+change it to:
+```python
+from expense_tracker.extensions import db, bcrypt
+```
+
+4. Their is also a bug in the code. We have initialised the database models incorrectly which prevents us from doing database integration tests. We need to change the following line in our models.py file:
+
+```python
+class Expense(db.Model):
+# ...
+
+class User(db.Model):
+# ...
+```
+
+to 
+
+```python
+class Expense(Base):
+# ...
+
+class User(Base):
+    __tablename__ = 'user'
+# ...
+```
+
+5. Lastly, we need to add in an `__init__.py` file to your src/expense_tracker directory. This file can be empty, but it will tell Python that this directory should be considered a package. This is needed for `pytest` to discover your code for testing and considered best practice for modules that are part of a package or application.
 
 > [!Tip]
-> Although these tests are working. You should get into the practice of creating tests that fail on first execution. The reason for this is to ensure that you test is actually working as expected and not just passing because of some other reason. You can do this by intentionally introducing a bug in your code, running the test, and making sure that the test fails. Once you have confirmed that the test is failing as expected, you can then fix the bug in your code and run the test again to make sure it is now passing. Eg: You could change `341.0` to `342.0` in the above code and make sure that the test is failing as expected before fixing it.
+> You should get into the practice of creating tests that fail on first execution. The reason for this is to ensure that your test is not just passing because it doesn't test the feature correctly or their is a bug in the code. You can do this by intentionally making the `assert` statement failing on first execution. Once you have confirmed that the test is failing as expected, you can then fix the bug in your test and run the test again to make sure it is now passing. Eg: You could change `341.0` to `342.0` in the above code and make sure that the test is failing as expected before fixing it.
 
 > [!Note]
 > There is a process call Test Driven Design (TDD) where we write the test before writing the code that makes the test pass. This can help us ensure that our code meets the requirements and is maintainable. It can also lead to software solutions that you didn't think of when you started coding as you are forced to consider all possible scenarios and ensure the code is testable. A drawback is that it can be time-consuming and require a lot of effort upfront.
 
 ## Running Tests
-To run tests, you need to have Python installed on your machine. Once you have Python installed, you can run the tests by navigating to the top level directory of the project and running the following command:
+To run tests navigate to the top level directory of the project and running the following command:
 
 ```
 pytest
