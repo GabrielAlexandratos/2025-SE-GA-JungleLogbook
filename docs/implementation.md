@@ -24,7 +24,7 @@ Use either github desktop or the command line to clone the repository.
 git clone https://github.com/KillarneyHeightsHS/expense-tracker.git
 ```
 
-[![Clone using GitHub Desktop](./cloning_a_repo.png)](https://www.youtube.com/watch?v=SUuYRbGf1UA Clone using GitHub Desktop)
+[![Clone using GitHub Desktop](./cloning_a_repo.png)](https://www.youtube.com/watch?v=SUuYRbGf1UA "Clone using GitHub Desktop")
 
 
 > [!TIP]
