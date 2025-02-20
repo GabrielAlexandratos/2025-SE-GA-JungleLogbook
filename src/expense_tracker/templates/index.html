@@ -2,12 +2,22 @@
 
 {% block content %}
 
+<style>
+    body {background-color: white;}
+    h1   {color: blue;}
+    p    {color: red;}
+</style>
+
 <div class="container mt-5">
-    <h1>Welcome to my Logbook</h1>
+    <h1>Welcome to the "Jungle Logbook"</h1>
     <p>This is a simple expense tracker application.</p>
     <p>Login or register to get started.</p>
-    <a href="auth/login">Login</a>
-    <a href="auth/register">Register</a>
+    <a href="auth/login">
+        <button>Login</button>
+    </a>
+    <a href="auth/register">
+        <button>register</button>
+    </a>
 </div>
 
 {% endblock %}
