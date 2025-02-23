@@ -1,28 +1,31 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #F4F1DE;
+    background-color: #d8f3dc;
     color: #333;
     line-height: 1;
 }
 h1{
-    color: #3D405B;
+    color: #081c15;
     font-weight: bold;
     letter-spacing: -2px;
     font-family: JetBrains Mono;
-    padding-bottom: 40px;
+    padding-bottom: 25px;
+    font-size: 50px;
 }
 
 h2, h3, h4, h5, h6 {
-    color: #3D405B;
-    font-weight: bold;
-    letter-spacing: -2px;
+    color: #081c15;
+    font-weight: bolder;
+    letter-spacing: -1px;
     font-family: JetBrains Mono;
 }
 
 p {
-    margin-bottom: 20px;
-
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-family: jetbrains mono;
+    letter-spacing: 0px;
 }
 
 /* Hide underlines for buttons and stuff */
@@ -31,15 +34,55 @@ a {
 }
 
 button{
-    width: 100px;
+    width: 120px;
     height: 40px;
-    margin-right: 100px;
+    top: 45px;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    position: relative;
+    display: block;
+    margin-top: 20px;
+    color: white;
+    background-color: #2d6a4f;
+    font-family: jetbrains mono;
+    font-weight: 1000;
+    border-radius: 2px;
+}
+
+button:hover{
+    background-color: white;
+    color: #2d6a4f;
+    cursor: pointer;
 }
 
 .landing-container {
     position: absolute;
     left: 50%;
-    top: 35%;
+    top: 40%;
     transform: translate(-50%, -50%);
     text-align: center;
+}
+
+.login-container {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.authentication-buttons{
+    display: block;
+} 
+
+input {
+    width: 200px;
+    height: 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    font-family: jetbrains mono;
+    font-weight: 700;
+    border-radius: 2px;
+    top: 20px;
 }
