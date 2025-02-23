@@ -1,42 +1,45 @@
-/* Reset some default browser styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
-/* Set a default font and background color */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #F4F1DE;
     color: #333;
-    line-height: 1.6;
+    line-height: 1;
+}
+h1{
+    color: #3D405B;
+    font-weight: bold;
+    letter-spacing: -2px;
+    font-family: JetBrains Mono;
+    padding-bottom: 40px;
 }
 
-/* Container class for centering content */
-.container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
+h2, h3, h4, h5, h6 {
+    color: #3D405B;
+    font-weight: bold;
+    letter-spacing: -2px;
+    font-family: JetBrains Mono;
 }
 
-/* Basic styling for headers */
-h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 20px;
-    color: #444;
-}
-
-/* Basic styling for paragraphs */
 p {
     margin-bottom: 20px;
+
 }
 
-/* Basic styling for links */
+/* Hide underlines for buttons and stuff */
 a {
-    color: #007BFF;
     text-decoration: none;
 }
 
-a:hover {
-    text-decoration: underline;
+button{
+    width: 100px;
+    height: 40px;
+    margin-right: 100px;
+}
+
+.landing-container {
+    position: absolute;
+    left: 50%;
+    top: 35%;
+    transform: translate(-50%, -50%);
+    text-align: center;
 }
