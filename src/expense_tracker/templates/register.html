@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<div class="landing-container"></div>
-    <h1>Welcome to the Registration Page</h1>
+<div class="container mt-5"></div>
+    <h1>Register an account</h1>
     <form action="/auth/register" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="row mb-3">

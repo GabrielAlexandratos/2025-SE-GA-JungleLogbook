@@ -4,6 +4,7 @@ from wtforms import StringField, FloatField, SubmitField, DateField, TextAreaFie
 from wtforms.validators import DataRequired, Length
 
 class ExpenseForm(FlaskForm):
+    user = StringField('User', validators=[DataRequired('Required')], render_kw={'placeholder': 'Email'}, default='this.user or whatever')
     title = StringField('Title', validators=[DataRequired('Title is required and a minimum of 2 characters'), Length(min=2, max=50)], render_kw={'placeholder': 'e.g. IGA'})
     category = StringField('Category', validators=[DataRequired(), Length(min=2, max=50)], render_kw={'placeholder': 'e.g. Groceries'})
     amount = FloatField('Amount', validators=[DataRequired()])
