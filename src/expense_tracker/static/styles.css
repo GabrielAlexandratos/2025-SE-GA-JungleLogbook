@@ -29,7 +29,7 @@ p {
 }
 
 /* Hide underlines for buttons and stuff */
-a {
+a { 
     text-decoration: none;
 }
 
