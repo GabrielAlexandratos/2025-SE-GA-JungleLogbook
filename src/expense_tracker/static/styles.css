@@ -31,15 +31,21 @@ a {
 }
 
 button{
+    display: block;
+    position: relative;
+    border-radius: 2px;
+    left: 210px;
+    margin-top: 10px;
+
     width: 100px;
     height: 40px;
-    margin-right: 100px;
 }
 
 .landing-container {
     position: absolute;
     left: 50%;
-    top: 35%;
+    top: 42%;
+
     transform: translate(-50%, -50%);
     text-align: center;
 }
